@@ -45,8 +45,17 @@ public class Game {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            playerList.get(0).setScore(i);
-            playerList.add(new Player("nowy"+i));
+            for(Player player:playerList)
+            {
+                if (player.isAlive()){
+                    Pair<Integer, Integer> position = player.getPosition();
+                    Double angle = player.getAngle();
+
+                    position.x = (int) (position.x + 5 * Math.cos(angle));
+                    position.y = (int) (position.y + 5 * Math.sin(angle));
+                    player.setPosition(position);
+                }
+            }
             update();
             window.draw();
         }

@@ -12,7 +12,7 @@ import java.lang.Math;
 import java.util.List;
 
 
-public class Window extends JFrame implements ActionListener, KeyListener{
+public class Window extends JFrame implements ActionListener{
     final static Color DEFAULT = new Color(0x1C, 0x1C, 0x1C);
     final static Color DARK_GREY = new Color(0x25, 0x25, 0x25);
     JPanel main_panel = new JPanel();
@@ -30,7 +30,7 @@ public class Window extends JFrame implements ActionListener, KeyListener{
     JButton chatSendButton = new JButton("Send");
     Chat chat = new Chat();
 
-
+    DrawingPanel drawingPanel = new DrawingPanel();
     Game game;
 
     JPanel left_panel = new JPanel();//chat_panel + score_panel
@@ -98,6 +98,10 @@ public class Window extends JFrame implements ActionListener, KeyListener{
 //        score_panel.setLayout(new BorderLayout()); // Ustawienie layoutu na BorderLayout dla panelu wyników
 //        score_panel.add(scoreTextArea, BorderLayout.CENTER); // Dodanie JScrollPane do panelu wyników
 
+        // Ustawienia okienka gry
+        game_panel.setLayout(new BorderLayout());
+         // Utworzenie obiektu klasy DrawingPanel
+        game_panel.add(drawingPanel, BorderLayout.CENTER);
 
 
         chat_panel.setPreferredSize(new Dimension(571, 500));
@@ -114,13 +118,13 @@ public class Window extends JFrame implements ActionListener, KeyListener{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(DEFAULT);
         this.setTitle("SZALONE ZAKRĘTY");
-        this.addKeyListener(this);
-        this.setFocusable(true);
-        this.requestFocusInWindow();
+        drawingPanel.setFocusable(true);
+        drawingPanel.requestFocusInWindow();
     }
 
     public void setGame(Game game){
         this.game = game;
+        game.addToPlayerList(new Player("ja"));
     }
     public void draw()
     {
@@ -132,7 +136,6 @@ public class Window extends JFrame implements ActionListener, KeyListener{
         scoreTextArea.setText("");
         String score = "";
         for(Player player:game.getPlayerList()){
-            String playername = player.getName();
             score = score.concat(player.getName() + "\t" + player.getScore() + "\n");
         }
         scoreTextArea.append(score);
@@ -146,60 +149,10 @@ public class Window extends JFrame implements ActionListener, KeyListener{
             String message = chatTextField.getText();
             chatTextField.setText("");
             chat.add(message);
-            this.setFocusable(true);
-            this.requestFocusInWindow();
+            drawingPanel.setFocusable(true);
+            drawingPanel.requestFocusInWindow();
         } else if (e.getActionCommand().equals("EXIT")) {
             //
         }
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        // Zapamiętanie aktualnej pozycji kropki przed przesunięciem
-        trail.add(new Point(x, y));
-        System.out.println(1);
-
-        // Przesunięcie pozycji na podstawie naciśniętego klawisza strzałki
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
-                x -= 1;
-                System.out.println(x);
-                break;
-            case KeyEvent.VK_RIGHT:
-                x += 1;
-                System.out.println(x);
-                break;
-            case KeyEvent.VK_UP:
-                y -= 1;
-                System.out.println(y);
-                break;
-            case KeyEvent.VK_DOWN:
-                y += 1;
-                System.out.println(y);
-                break;
-        }
-
-        // Odświeżenie panelu, aby pokazać nową pozycję
-        repaint();
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {System.out.println(2);}
-
-    @Override
-    public void keyReleased(KeyEvent e) {System.out.println(3);}
-    public void paintComponent(Graphics g) {
-        super.paintComponents(g);
-
-        // Ustawienie koloru rysowania
-        g.setColor(Color.BLACK);
-
-        // Narysowanie kropki na panelu na podstawie aktualnej pozycji x i y
-        g.fillOval(x, y, 10, 10);
-
-        // Narysowanie śladu
-        /*for (Point point : trail) {
-            g.fillOval(point.x, point.y, 10, 10);
-        }*/
     }
 }

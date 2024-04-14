@@ -64,4 +64,12 @@ public class Player{
     public void setPosition(Pair<Integer, Integer> position) {
         this.position = position;
     }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
 }

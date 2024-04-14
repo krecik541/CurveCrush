@@ -18,11 +18,6 @@ public class Main {
         Window window = new Window();
 
         Game game = new Game(window);
-        game.addToPlayerList(new Player("koń"));
-        game.addToPlayerList(new Player("słoń"));
-        game.addToPlayerList(new Player("pies"));
-        game.addToPlayerList(new Player("ja"));
-
         window.setGame(game);
         game.loop();
     }
