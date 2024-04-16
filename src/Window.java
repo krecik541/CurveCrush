@@ -154,7 +154,6 @@ public class Window extends JFrame implements ActionListener{
             drawingPanel.requestFocusInWindow();
         } else if (e.getActionCommand().equals("EXIT")) {
             System.exit(0);
-            //System.out.println("EXIT");
         }
     }
 }
