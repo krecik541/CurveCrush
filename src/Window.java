@@ -64,6 +64,7 @@ public class Window extends JFrame implements ActionListener{
         // Ustawienia okienka chatu
         chat_panel.setLayout(new BorderLayout());
         chatSendButton.addActionListener(this);
+        chatExitButton.addActionListener(this);
 
         chatLabel.setForeground(Color.WHITE);
         JScrollPane scrollPane = new JScrollPane(chatLabel);
@@ -152,7 +153,8 @@ public class Window extends JFrame implements ActionListener{
             drawingPanel.setFocusable(true);
             drawingPanel.requestFocusInWindow();
         } else if (e.getActionCommand().equals("EXIT")) {
-            //
+            System.exit(0);
+            //System.out.println("EXIT");
         }
     }
 }
