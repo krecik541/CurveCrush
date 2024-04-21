@@ -13,4 +13,10 @@ public class Pair<T, U> {
         else
             return false;
     }
+
+    @Override
+    public String toString()
+    {
+        return x.toString() + " " + y.toString();
+    }
 }

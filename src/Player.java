@@ -1,19 +1,31 @@
 import java.awt.*;
-import java.awt.event.KeyListener;
 import java.util.Random;
 
 public class Player{
-    private Pair<Integer, Integer>position;
-    private boolean isAlive;
-    //powerupy
-    private int score;
-    private double angle;
-    private Color color;// w przyszłości zmienne kolory
     private String name;
+    private int score;
+    private boolean isAlive;
+    private Pair<Integer, Integer>position;
+    private double angle;
+    private Color color;
+    private double speed = 1.5;
+    double x = 0;
+    double y = 0;
+
     Player(String name)
     {
         this.name = name;
         reset();
+    }
+
+    Player(String name, int score, boolean isAlive, Color color, double angle)
+    {
+        this.name = name;
+        this.score = score;
+        this.isAlive = isAlive;
+        this.color = color;
+        this.angle = angle;
+        this.position = new Pair<>(0, 0);
     }
 
     public void reset()
@@ -23,6 +35,19 @@ public class Player{
         isAlive = false;
         color = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
         angle = 0;
+    }
+
+    public void updatePosition()
+    {
+        x += Math.cos(Math.abs(angle)) * speed;
+        y += Math.sin(Math.abs(angle)) * speed;
+        position.x = (int) (position.x + (int) x);
+        position.y = (int) (position.y + (int) y);
+        if(x >= 1 || x <= -1)
+            x %= 1;
+        if(y >= 1 || y <= -1)
+            y %= 1;
+        angle %= (Math.PI * 2);
     }
 
     public String getName() {
@@ -71,5 +96,8 @@ public class Player{
 
     public void setAngle(double angle) {
         this.angle = angle;
+    }
+    public void updateAngle(double angle) {
+        this.angle += angle;
     }
 }
