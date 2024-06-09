@@ -3,13 +3,23 @@ package org.example;
 import java.sql.Array;
 import java.util.*;
 public class Chat {
-    Queue<String> chat = new LinkedList<>();
+    private final Queue<String> chat = new LinkedList<>();
+    private String message;
 
     public void add(String message)
     {
-        /*if(chat.size() == 10)
-            chat.remove(chat.peek());*/
         chat.add(message);
+    }
+
+    public void clear()
+    {
+        chat.clear();
+    }
+
+    public void set(String messages)
+    {
+        chat.clear();
+        chat.add(messages);
     }
 
     public String getChat(){
@@ -17,5 +27,13 @@ public class Chat {
         for(String ss : chat)
             s = s.concat(ss + "\n");
         return s;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

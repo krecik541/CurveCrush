@@ -1,6 +1,8 @@
 package org.example;
 
-public class Pair<T, U> {
+import java.io.Serializable;
+
+public class Pair<T, U> implements Serializable {
     public T x;
     public U y;
     public Pair(T x, U y)
@@ -8,12 +10,14 @@ public class Pair<T, U> {
         this.x = x;
         this.y = y;
     }
-    boolean Equal(Pair par1, Pair par2)
+    public Pair(Pair pair)
     {
-        if(par1.x.equals(par2.x) && par1.y.equals(par2.y))
-            return true;
-        else
-            return false;
+        this.x = (T) pair.x;
+        this.y = (U) pair.y;
+    }
+    boolean Equal(Pair par1, Pair<Object, Object> par2)
+    {
+        return par1.x.equals(par2.x) && par1.y.equals(par2.y);
     }
 
     @Override

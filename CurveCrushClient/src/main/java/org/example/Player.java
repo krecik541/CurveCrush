@@ -1,27 +1,29 @@
 package org.example;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 
-public class Player {
+public class Player implements Serializable {
+    private static final long serialVersionUID = 1L; // Zaleca się dodanie serialVersionUID dla klas serializowanych
+
     private String name;
     private int score;
     private boolean isAlive;
-    private Pair<Integer, Integer>position;
+    private Pair<Integer, Integer> position;
     private double angle;
     private Color color;
     private double speed = 1.5;
-    double x = 0;
-    double y = 0;
+    private transient double x = 0; // Nie jest konieczne do serializacji, więc oznaczamy jako transient
+    private transient double y = 0; // Nie jest konieczne do serializacji, więc oznaczamy jako transient
+    private boolean isReady = false;
 
-    Player(String name)
-    {
+    public Player(String name) {
         this.name = name;
         reset();
     }
 
-    Player(String name, int score, boolean isAlive, Color color, double angle)
-    {
+    public Player(String name, int score, boolean isAlive, Color color, double angle) {
         this.name = name;
         this.score = score;
         this.isAlive = isAlive;
@@ -30,26 +32,28 @@ public class Player {
         this.position = new Pair<>(0, 0);
     }
 
-    public void reset()
-    {
+    public void reset() {
         Random random = new Random(System.currentTimeMillis());
         score = 0;
         isAlive = false;
         color = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
         angle = 0;
+        position = new Pair<>(0, 0); // Resetujemy również pozycję
+        x = 0; // Resetujemy pozycję x
+        y = 0; // Resetujemy pozycję y
     }
 
-    public void updatePosition()
-    {
+    public void updatePosition() {
         x += Math.cos(Math.abs(angle)) * speed;
         y += Math.sin(Math.abs(angle)) * speed;
         position.x = (int) (position.x + (int) x);
         position.y = (int) (position.y + (int) y);
-        if(x >= 1 || x <= -1)
+        if (x >= 1 || x <= -1)
             x %= 1;
-        if(y >= 1 || y <= -1)
+        if (y >= 1 || y <= -1)
             y %= 1;
         angle %= (Math.PI * 2);
+        System.out.println(name + " pos: " + x + " " + y);
     }
 
     public String getName() {
@@ -80,6 +84,10 @@ public class Player {
         return score;
     }
 
+    public void increaseScore() {
+        score++;
+    }
+
     public void setScore(int score) {
         this.score = score;
     }
@@ -99,17 +107,16 @@ public class Player {
     public void setAngle(double angle) {
         this.angle = angle;
     }
+
     public void updateAngle(double angle) {
         this.angle += angle;
     }
 
-    public double getRadius() {
-        return radius;
+    public void setReady(boolean ready) {
+        isReady = ready;
     }
-    public void updateRadius(double radius) {
-        this.radius += radius;
-    }
-    public void setRadius(double radius) {
-        this.radius = radius;
+
+    public boolean isReady() {
+        return isReady;
     }
 }

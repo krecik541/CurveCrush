@@ -15,28 +15,28 @@ import java.util.List;
 
 
 public class Window extends JFrame implements ActionListener{
-    final static Color DEFAULT = new Color(0x1C, 0x1C, 0x1C);
-    final static Color DARK_GREY = new Color(0x25, 0x25, 0x25);
-    JPanel main_panel = new JPanel();
+    private final static Color DEFAULT = new Color(0x1C, 0x1C, 0x1C);
+    private final static Color DARK_GREY = new Color(0x25, 0x25, 0x25);
+    private JPanel main_panel = new JPanel();
 
-    JPanel game_panel = new JPanel();
+    private JPanel game_panel = new JPanel();
     // Zmienne odpowiedzialne za wyświetlanie czatu
-    JPanel score_panel = new JPanel();
-    JTextArea scoreTextArea = new JTextArea();
+    private JPanel score_panel = new JPanel();
+    private JTextArea scoreTextArea = new JTextArea();
 
     // Zmienne odpowiedzialne za wyświetlanie czatu
-    JPanel chat_panel = new JPanel();
-    JTextArea chatLabel = new JTextArea();
-    JTextField chatTextField = new JTextField();
-    JButton chatExitButton = new JButton("EXIT");
-    JButton chatSendButton = new JButton("Send");
-    Chat chat = new Chat();
+    private JPanel chat_panel = new JPanel();
+    private JTextArea chatLabel = new JTextArea();
+    private  JTextField chatTextField = new JTextField();
+    private JButton chatExitButton = new JButton("EXIT");
+    private JButton chatSendButton = new JButton("Send");
+    private DrawingPanel drawingPanel = new DrawingPanel();
+    private JPanel left_panel = new JPanel();//chat_panel + score_panel
 
-    DrawingPanel drawingPanel = new DrawingPanel();
-    JPanel left_panel = new JPanel();//chat_panel + score_panel
+    private Chat chat = new Chat();
 
-    Pair<Integer, Integer> windowSize = new Pair<Integer, Integer>(1280, 800);
-    Pair<Double, Double> windowMargin = new Pair<Double, Double>(0.05, 0.05);
+    private Pair<Integer, Integer> windowSize = new Pair<Integer, Integer>(1280, 800);
+    private Pair<Double, Double> windowMargin = new Pair<Double, Double>(0.05, 0.05);
     private int x = 650; // Początkowa pozycja x
     private int y = 400; // Początkowa pozycja y
     public Window()
@@ -125,7 +125,8 @@ public class Window extends JFrame implements ActionListener{
     public DrawingPanel getDrawingPanel() {
         return drawingPanel;
     }
-    public void draw(List<Player>playerList)
+    public Chat getChat(){return chat;}
+    public void draw(List<Pair<String, Integer>>playerList, List<Pair<Pair<Integer, Integer>, Color>> playerMove)
     {
         // wyświetlanie czatu
         chatLabel.setText("");
@@ -134,22 +135,39 @@ public class Window extends JFrame implements ActionListener{
         //score_panel
         scoreTextArea.setText("");
         String score = "";
-        for(Player player:playerList){
-            score = score.concat(player.getName() + "\t" + player.getScore() + "\n");
+        for(Pair<String, Integer> player:playerList){
+            score = score.concat(player.x + "\t" + player.y + "\n");
         }
         scoreTextArea.append(score);
+
+        // wyrysowanie okna gry
+        drawingPanel.setThingsToDraw(playerMove);
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("Send")) {
-            String message = chatTextField.getText();
+            chat.setMessage(chatTextField.getText());
             chatTextField.setText("");
-            chat.add(message);
+            // chat.add(message);
             drawingPanel.setFocusable(true);
             drawingPanel.requestFocusInWindow();
         } else if (e.getActionCommand().equals("EXIT")) {
-            System.exit(0);
+            chat.setMessage("QUIT");
         }
+    }
+
+    public void setMessage(String message){
+        chat.setMessage(message);
+    }
+    public String getMessage()
+    {
+        return chat.getMessage();
+    }
+
+    public int getAngle()
+    {
+        return drawingPanel.getAngle();
     }
 }
