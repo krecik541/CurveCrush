@@ -20,11 +20,16 @@ public class Window extends JFrame implements ActionListener{
     private JPanel main_panel = new JPanel();
 
     private JPanel game_panel = new JPanel();
-    // Zmienne odpowiedzialne za wyświetlanie czatu
+    /**
+     * Zmienne odpowiedzialne za wyświetlanie czatu
+     */
+
     private JPanel score_panel = new JPanel();
     private JTextArea scoreTextArea = new JTextArea();
 
-    // Zmienne odpowiedzialne za wyświetlanie czatu
+    /**
+     * Zmienne odpowiedzialne za wyświetlanie czatu
+     */
     private JPanel chat_panel = new JPanel();
     private JTextArea chatLabel = new JTextArea();
     private  JTextField chatTextField = new JTextField();
@@ -33,16 +38,12 @@ public class Window extends JFrame implements ActionListener{
     private DrawingPanel drawingPanel = new DrawingPanel();
     private JPanel left_panel = new JPanel();//chat_panel + score_panel
 
-    private Chat chat = new Chat();
+    private final Chat chat = new Chat();
 
-    private Pair<Integer, Integer> windowSize = new Pair<Integer, Integer>(1280, 800);
-    private Pair<Double, Double> windowMargin = new Pair<Double, Double>(0.05, 0.05);
-    private int x = 650; // Początkowa pozycja x
-    private int y = 400; // Początkowa pozycja y
+    private final Pair<Integer, Integer> windowSize = new Pair<Integer, Integer>(1280, 800);
+    private final Pair<Double, Double> windowMargin = new Pair<Double, Double>(0.05, 0.05);
     public Window()
     {
-        Pair<Integer, Integer> margin = new Pair<Integer, Integer>((int)(windowSize.x * windowMargin.x), (int)(windowSize.y * windowMargin.y));
-
         main_panel.setBackground(DEFAULT);
         chat_panel.setBackground(DARK_GREY);
         game_panel.setBackground(Color.WHITE);
@@ -53,7 +54,7 @@ public class Window extends JFrame implements ActionListener{
         left_panel.setLayout(new BoxLayout(left_panel, BoxLayout.Y_AXIS));
 
 
-        int padding = 30; // możesz dostosować wielkość paddingu według potrzeb
+        int padding = 30;
         main_panel.setBorder(new EmptyBorder(padding, padding, padding, padding));
         padding = 20;
         chat_panel.setBorder(new EmptyBorder(padding, padding, padding, padding));
@@ -82,8 +83,6 @@ public class Window extends JFrame implements ActionListener{
         chat_panel.add(buttonPanel, BorderLayout.SOUTH);
 
 
-        // Ustawienia okienka wyników
-        // wersja ze scrollem
         scoreTextArea.setForeground(Color.WHITE);
         scoreTextArea.setBackground(Color.BLACK);
         JScrollPane scoreScrollPane = new JScrollPane(scoreTextArea);
@@ -92,11 +91,6 @@ public class Window extends JFrame implements ActionListener{
         score_panel.setLayout(new BorderLayout()); // Ustawienie layoutu na BorderLayout dla panelu wyników
         score_panel.add(scoreScrollPane, BorderLayout.CENTER); // Dodanie JScrollPane do panelu wyników
 
-        // wersja bez scrolla
-//        scoreTextArea.setForeground(Color.WHITE);
-//        scoreTextArea.setBackground(Color.BLACK);
-//        score_panel.setLayout(new BorderLayout()); // Ustawienie layoutu na BorderLayout dla panelu wyników
-//        score_panel.add(scoreTextArea, BorderLayout.CENTER); // Dodanie JScrollPane do panelu wyników
 
         // Ustawienia okienka gry
         game_panel.setLayout(new BorderLayout());
@@ -126,6 +120,12 @@ public class Window extends JFrame implements ActionListener{
         return drawingPanel;
     }
     public Chat getChat(){return chat;}
+
+    /**
+     * Wyrysowywanie całego okna przy zaktualizowanym stanie
+     * @param playerList lista graczy zawierająca nicki oraz wyniki graczy, wyświetlana w score_panel
+     * @param playerMove lista graczy zawierająca pozycje oraz kolory graczy, wyrysowywana w oknie gry
+     */
     public void draw(List<Pair<String, Integer>>playerList, List<Pair<Pair<Integer, Integer>, Color>> playerMove)
     {
         // wyświetlanie czatu
@@ -145,6 +145,10 @@ public class Window extends JFrame implements ActionListener{
 
     }
 
+    /**
+     * Obsługa przycisków
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("Send")) {
@@ -156,14 +160,6 @@ public class Window extends JFrame implements ActionListener{
         } else if (e.getActionCommand().equals("EXIT")) {
             chat.setMessage("QUIT");
         }
-    }
-
-    public void setMessage(String message){
-        chat.setMessage(message);
-    }
-    public String getMessage()
-    {
-        return chat.getMessage();
     }
 
     public int getAngle()

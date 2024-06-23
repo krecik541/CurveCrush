@@ -15,30 +15,31 @@ import java.util.logging.Logger;
 public class Client {
     public static void main(String[] args) {
         try {
-            Socket socket = new Socket("localhost", 5000);
-            Logger logger = Logger.getLogger("");
+            // IP i port serwera
+            Socket socket = new Socket("192.168.0.31", 5000);
 
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
+            // Pobieranie nicku użytkownika
             String name = JOptionPane.showInputDialog("Enter your name:");
             Window window = new Window();
             Chat chat = window.getChat();
             List<Pair<String, Integer>> playerList = new LinkedList<>();
             List<Pair<Pair<Integer, Integer>, Color>> playerMove = new ArrayList<>();
 
-            // wysyłanie imienia
+            // Wysyłanie nicku
             out.writeObject(name);
             boolean isQuitting = false;
 
+            // Oczekiwanie na potwierdzenie przez gracza gotowości
             String string;
             do {
                 string = chat.getMessage();
                 out.writeObject(string);
             } while (string == null || !string.equalsIgnoreCase("READY"));
 
-            // sleep do czasu aż gra się nie rozpocznie lub nie zostanie wysłany chat
-
+            // Sleep do czasu aż gra się nie rozpocznie
             boolean q = true;
             do {
                 q = (boolean) in.readObject();
@@ -46,12 +47,10 @@ public class Client {
 
             while(true)
             {
-//                String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new java.util.Date());
-//                System.out.println(timeStamp);
-                // jeśli się skończyła runda
                 String special = in.readObject().toString();
                 switch(special)
                 {
+                    // Odebranie znacznika nowej rundy
                     case "newround": {
                         //czyszczenie planszy
                         window.getDrawingPanel().cleanGameBoard();
@@ -63,7 +62,9 @@ public class Client {
                         }
                         break;
                     }
+                    // Odebranie znacznika zakończenia gry, a także zakończenie działania wątku
                     case "endgame": {
+                        // Wysłanie potwierdzenia przyjęcia znacznika
                         out.writeObject("end");
                         out.close();
                         in.close();
@@ -86,20 +87,22 @@ public class Client {
 
                 }
 
-                // wysyłanie danych
+                // Wysyłanie danych
                 String line = chat.getMessage();
                 chat.setMessage(null);
+                // Wysłanie aktualizacji kąta gracza
                 if(line == null)
                 {
-                    //wysyła samą pozycję
                     out.writeObject("ANGLE");
                     out.writeObject(window.getAngle());
                 }
+                // Wysłanie informacji o zakończeniu przez gracza rozgrywki
                 else if (line.equals("QUIT"))
                 {
                     out.writeObject("QUIT");
                     isQuitting = true;
                 }
+                // Wysłanie czatu oraz aktualizacji kąta
                 else
                 {
                     out.writeObject("CHAT");
@@ -114,7 +117,7 @@ public class Client {
 
 
 
-                // odbieranie chatu
+                // Odbieranie chatu
                 int size = (int) in.readObject();
                 chat.clear();
                 for(int i=0; i<size; i++) {
@@ -130,7 +133,8 @@ public class Client {
                     }
                 }
 
-                // odbieranie name + score + position + color gracza
+                // Odebranie jest ponawiane do momentu, aż nie odebrany zostanie komunikat o poprawnym
+                // odebraniu i przetworzeniu dla każdego gracza
                 size = (int) in.readObject();
                 for(int i=0; i<size; i++) {
                     String s;
@@ -138,12 +142,13 @@ public class Client {
                     Color color;
 
                     try {
+                        // Odebranie nicku gracza, którego informacje są aktualnie wysyłane
                         s = (String) in.readObject();
+                        // Odebranie wyniku gracza
                         score = (Integer) in.readObject();
 
-                        boolean p = (boolean) in.readObject();
-
-                        if(p)
+                        // Odebranie pozycji gracza w momencie, gdy ma wystąpić przerwa w śladzie danego gracza
+                        if((boolean) in.readObject())
                         {
                             posx = (Integer)in.readObject();
                             posy = (Integer)in.readObject();
@@ -152,30 +157,29 @@ public class Client {
                             }
                         }
 
+                        // Odebranie pozycji danego gracza
                         posx = (Integer)in.readObject();
                         posy = (Integer)in.readObject();
+                        // Odebranie koloru danego gracza
                         color = (Color) in.readObject();
 
                         playerList.add(new Pair<>(s, score));
                         synchronized(playerMove) {
                             playerMove.add(new Pair<>(new Pair<>(posx, posy), color));
                         }
+                        // Odebranie komunikatu potwierdzającego poprawne odebranie i przetworzenie
                         out.writeObject(true);
                     }
                     catch (ClassCastException e)
                     {
+                        // Wysyłanie komunikatu potwierdzającego niepoprawne odebranie i przetworzenie
+                        // a następnie ponowienie całej operacji
                         out.writeObject(false);
                         i--;
                     }
                 }
 
-//                logger.log(Level.INFO, "REPAINTED");
                 window.draw(playerList, playerMove.stream().toList());
-
-
-
-//                timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new java.util.Date());
-//                System.out.println(timeStamp);
             }
 
             out.close();

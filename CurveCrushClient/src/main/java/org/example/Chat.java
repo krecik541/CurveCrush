@@ -3,7 +3,13 @@ package org.example;
 import java.sql.Array;
 import java.util.*;
 public class Chat {
+    /**
+     * Struktura przechowująca czat
+     */
     private final Queue<String> chat = new LinkedList<>();
+    /**
+     * Wysyłany komunikat/wiadomość
+     */
     private String message;
 
     public void add(String message)
@@ -14,12 +20,6 @@ public class Chat {
     public void clear()
     {
         chat.clear();
-    }
-
-    public void set(String messages)
-    {
-        chat.clear();
-        chat.add(messages);
     }
 
     public String getChat(){

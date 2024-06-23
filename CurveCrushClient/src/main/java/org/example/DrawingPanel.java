@@ -18,6 +18,10 @@ public class DrawingPanel extends JPanel implements KeyListener {
         addKeyListener(this);
     }
 
+    /**
+     * Wyrysowuje aktualne pozycje graczy na planszy
+     * @param playerMove lista zawierająca kolory graczy oraz ich pozycje do wyrysowania
+     */
     public void setThingsToDraw(List<Pair<Pair<Integer, Integer>, Color>> playerMove) {
         if (offscreenGraphics == null) {
             return;
@@ -31,6 +35,9 @@ public class DrawingPanel extends JPanel implements KeyListener {
         repaint();
     }
 
+    /**
+     * Czyszczenie planszy
+     */
     public void cleanGameBoard() {
         if (offscreenGraphics != null) {
             offscreenGraphics.setColor(Color.WHITE);
@@ -53,6 +60,10 @@ public class DrawingPanel extends JPanel implements KeyListener {
         g.drawImage(offscreenImage, 0, 0, this);
     }
 
+    /**
+     * Obsługuje poruszanie zmianę kąta ruchu gracza
+     * @param e the event to be processed
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
